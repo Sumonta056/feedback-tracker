@@ -7,13 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormDescription,
-  FormMessage,
-} from '@/components/ui/form';
 
 interface CustomFieldsProps {
   customFields: CustomField[];
@@ -258,14 +251,12 @@ const CustomFields: React.FC<CustomFieldsProps> = ({ customFields, onChange, isE
               )}
             </>
           ) : (
-            <FormItem>
-              <FormLabel>{field.label}{field.required && <span className="text-red-500"> *</span>}</FormLabel>
-              <FormControl>
+            <div className="space-y-2">
+              <Label>{field.label}{field.required && <span className="text-red-500"> *</span>}</Label>
+              <div>
                 {renderFieldValue(field, index)}
-              </FormControl>
-              {field.type === 'checkbox' && <FormDescription/>}
-              <FormMessage />
-            </FormItem>
+              </div>
+            </div>
           )}
         </div>
       ))}
