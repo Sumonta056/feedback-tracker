@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Star, ChevronDown, ChevronUp, FileImage, FilePdf, FileText, File, ExternalLink } from 'lucide-react';
+import { Star, ChevronDown, ChevronUp, FileImage, FileText, File, ExternalLink } from 'lucide-react';
 import { FeedbackItem } from '@/types/feedback';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -32,7 +32,7 @@ const FeedbackCard: React.FC<FeedbackCardProps> = ({ feedback }) => {
     if (type.startsWith('image/')) {
       return <FileImage className="h-4 w-4" />;
     } else if (type === 'application/pdf') {
-      return <FilePdf className="h-4 w-4" />;
+      return <FileText className="h-4 w-4" />; // Using FileText instead of FilePdf
     } else if (type.includes('word')) {
       return <FileText className="h-4 w-4" />;
     }

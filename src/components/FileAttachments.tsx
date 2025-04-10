@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { FileAttachment } from '@/types/feedback';
-import { File, FileImage, FilePdf, FileText, X } from 'lucide-react';
+import { File, FileImage, FileText, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { toast } from "sonner";
@@ -86,7 +86,7 @@ const FileAttachments: React.FC<FileAttachmentsProps> = ({ attachments, onChange
     if (type.startsWith('image/')) {
       return <FileImage className="h-5 w-5" />;
     } else if (type === 'application/pdf') {
-      return <FilePdf className="h-5 w-5" />;
+      return <FileText className="h-5 w-5" />; // Using FileText instead of FilePdf
     } else if (type.includes('word')) {
       return <FileText className="h-5 w-5" />;
     }
