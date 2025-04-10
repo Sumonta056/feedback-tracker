@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
 import { Label } from '@/components/ui/label';
@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import StarRating from './StarRating';
 import { useFeedbackStore } from '@/store/feedbackStore';
+import FileAttachments from './FileAttachments';
+import CustomFields from './CustomFields';
+import { FileAttachment, CustomField } from '@/types/feedback';
 
 const categories = [
   { value: 'bug', label: 'Bug Report' },
@@ -18,7 +21,21 @@ const categories = [
   { value: 'other', label: 'Other' },
 ];
 
-const FeedbackForm: React.FC = () => {
+interface FeedbackFormProps {
+  customFields?: CustomField[];
+  showFileUpload?: boolean;
+  isCustomizing?: boolean;
+  onCustomFieldsChange?: (fields: CustomField[]) => void;
+  onCustomizingChange?: (isCustomizing: boolean) => void;
+}
+
+const FeedbackForm: React.FC<FeedbackFormProps> = ({
+  customFields = [],
+  showFileUpload = false,
+  isCustomizing = false,
+  onCustomFieldsChange,
+  onCustomizingChange
+}) => {
   const navigate = useNavigate();
   const addFeedback = useFeedbackStore(state => state.addFeedback);
   
@@ -30,11 +47,22 @@ const FeedbackForm: React.FC = () => {
     category: ''
   });
   
+  const [attachments, setAttachments] = useState<FileAttachment[]>([]);
+  const [internalCustomFields, setInternalCustomFields] = useState<CustomField[]>([]);
+  const [editableCustomFields, setEditableCustomFields] = useState<CustomField[]>(customFields);
+  
   const [errors, setErrors] = useState({
     rating: '',
     message: '',
     category: ''
   });
+  
+  // Initialize internal custom fields from props
+  useEffect(() => {
+    if (!isCustomizing) {
+      setInternalCustomFields(customFields);
+    }
+  }, [customFields, isCustomizing]);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -80,6 +108,18 @@ const FeedbackForm: React.FC = () => {
       isValid = false;
     }
     
+    // Validate required custom fields
+    const customFieldErrors = internalCustomFields.filter(field => 
+      field.required && !field.value.trim()
+    );
+    
+    if (customFieldErrors.length > 0) {
+      customFieldErrors.forEach(field => {
+        toast.error(`Please fill out the required field: ${field.label}`);
+      });
+      isValid = false;
+    }
+    
     setErrors(newErrors);
     return isValid;
   };
@@ -88,11 +128,26 @@ const FeedbackForm: React.FC = () => {
     e.preventDefault();
     
     if (validateForm()) {
+      // Process file attachments
+      const processedAttachments = attachments.map(attachment => ({
+        name: attachment.name,
+        type: attachment.type,
+        url: attachment.url
+      }));
+      
+      // Process custom fields
+      const processedCustomFields = internalCustomFields.map(field => ({
+        label: field.label,
+        value: field.value
+      }));
+      
       // Add timestamp to feedback
       const newFeedback = {
         ...formData,
         id: Date.now().toString(),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        attachments: processedAttachments,
+        customFields: processedCustomFields
       };
       
       // Save feedback to store
@@ -105,6 +160,43 @@ const FeedbackForm: React.FC = () => {
       navigate('/thank-you');
     }
   };
+  
+  const handleSaveCustomFields = () => {
+    if (onCustomFieldsChange) {
+      onCustomFieldsChange(editableCustomFields);
+    }
+    if (onCustomizingChange) {
+      onCustomizingChange(false);
+    }
+  };
+  
+  const handleCancelCustomizing = () => {
+    setEditableCustomFields(customFields);
+    if (onCustomizingChange) {
+      onCustomizingChange(false);
+    }
+  };
+  
+  if (isCustomizing) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <h2 className="text-xl font-semibold">Customize Form Fields</h2>
+        <CustomFields
+          customFields={editableCustomFields}
+          onChange={setEditableCustomFields}
+          isEditing={true}
+        />
+        <div className="flex justify-end space-x-3 mt-4">
+          <Button variant="outline" onClick={handleCancelCustomizing}>
+            Cancel
+          </Button>
+          <Button onClick={handleSaveCustomFields}>
+            Save Fields
+          </Button>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <form onSubmit={handleSubmit} className="space-y-6 animate-fade-in">
@@ -176,6 +268,25 @@ const FeedbackForm: React.FC = () => {
           />
           {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
         </div>
+        
+        {/* Custom Fields */}
+        {internalCustomFields.length > 0 && (
+          <div className="mt-6">
+            <CustomFields
+              customFields={internalCustomFields}
+              onChange={setInternalCustomFields}
+              isEditing={false}
+            />
+          </div>
+        )}
+        
+        {/* File Attachments */}
+        {showFileUpload && (
+          <FileAttachments
+            attachments={attachments}
+            onChange={setAttachments}
+          />
+        )}
       </div>
       
       <Button type="submit" className="feedback-primary-button w-full">
