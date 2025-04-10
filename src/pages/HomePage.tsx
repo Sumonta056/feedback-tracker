@@ -2,68 +2,59 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { MessageSquareHeart, ArrowRight } from 'lucide-react';
 import Layout from '@/components/Layout';
 
 const HomePage: React.FC = () => {
   return (
-    <Layout className="py-12">
-      <div className="max-w-4xl mx-auto text-center">
-        <div className="flex justify-center mb-6">
-          <div className="h-20 w-20 rounded-full feedback-gradient flex items-center justify-center">
-            <MessageSquareHeart className="h-10 w-10 text-white" />
-          </div>
+    <Layout className="bg-gray-50">
+      <div className="max-w-4xl mx-auto text-center animate-fade-in">
+        <div className="mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+            We Value Your Feedback
+          </h1>
+          <p className="text-xl text-gray-600 mb-8">
+            Help us improve our products and services by sharing your thoughts and experiences.
+          </p>
+          <Link to="/feedback">
+            <Button className="feedback-primary-button hover-scale text-lg px-8 py-6">
+              Give Feedback
+            </Button>
+          </Link>
         </div>
         
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">
-          We Value Your{' '}
-          <span className="bg-gradient-to-r from-feedback-purple to-feedback-darkPurple bg-clip-text text-transparent">
-            Feedback
-          </span>
-        </h1>
-        
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto animate-slide-in">
-          Your opinions help us improve our products and services.
-          Share your thoughts, suggestions, or report issues.
-        </p>
-        
-        <Link to="/feedback">
-          <Button className="feedback-primary-button text-lg group">
-            Give Feedback
-            <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-          </Button>
-        </Link>
-        
-        <div className="mt-16 grid md:grid-cols-3 gap-6">
-          <div className="feedback-card">
-            <div className="h-12 w-12 rounded-full bg-feedback-lightPurple flex items-center justify-center mb-4 mx-auto">
-              <span className="text-xl font-bold text-feedback-darkPurple">1</span>
+        <div className="grid md:grid-cols-3 gap-6 mb-12">
+          {[
+            {
+              title: "Quick & Easy",
+              description: "Our streamlined form takes just a minute to complete."
+            },
+            {
+              title: "Your Voice Matters",
+              description: "Every feedback submission is reviewed by our team."
+            },
+            {
+              title: "Drive Improvements",
+              description: "Your insights directly influence our development process."
+            }
+          ].map((item, index) => (
+            <div key={index} className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+              <p className="text-gray-600">{item.description}</p>
             </div>
-            <h3 className="font-semibold text-lg mb-2">Share Your Experience</h3>
-            <p className="text-gray-600">
-              Tell us about your experience with our product or service.
-            </p>
-          </div>
-          
-          <div className="feedback-card">
-            <div className="h-12 w-12 rounded-full bg-feedback-lightPurple flex items-center justify-center mb-4 mx-auto">
-              <span className="text-xl font-bold text-feedback-darkPurple">2</span>
-            </div>
-            <h3 className="font-semibold text-lg mb-2">Quick & Simple</h3>
-            <p className="text-gray-600">
-              Our form takes less than a minute to complete.
-            </p>
-          </div>
-          
-          <div className="feedback-card">
-            <div className="h-12 w-12 rounded-full bg-feedback-lightPurple flex items-center justify-center mb-4 mx-auto">
-              <span className="text-xl font-bold text-feedback-darkPurple">3</span>
-            </div>
-            <h3 className="font-semibold text-lg mb-2">Help Us Improve</h3>
-            <p className="text-gray-600">
-              Your feedback directly impacts our development decisions.
-            </p>
-          </div>
+          ))}
+        </div>
+        
+        <div className="bg-gradient-to-r from-purple-600 to-indigo-700 text-white p-8 rounded-lg">
+          <h2 className="text-2xl font-bold mb-4">Ready to share your thoughts?</h2>
+          <p className="mb-6">
+            Your feedback is essential for our continuous improvement. 
+            We appreciate your time and insights.
+          </p>
+          <Link to="/feedback">
+            <Button variant="outline" className="bg-white text-purple-700 hover:bg-gray-100">
+              Start Now
+            </Button>
+          </Link>
         </div>
       </div>
     </Layout>

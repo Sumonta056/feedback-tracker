@@ -7,7 +7,7 @@ import AdminLogin from '@/components/AdminLogin';
 import FeedbackCard from '@/components/FeedbackCard';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { toast } from '@/components/ui/sonner';
+import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
