@@ -23,7 +23,7 @@ import { Button } from '@/components/ui/button';
 const AdminPage: React.FC = () => {
   const { feedbacks, isAuthenticated, setAuthenticated, deleteFeedback } = useFeedbackStore();
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState('');
+  const [filterCategory, setFilterCategory] = useState('all');
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   
@@ -84,7 +84,7 @@ const AdminPage: React.FC = () => {
       (feedback.name && feedback.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (feedback.email && feedback.email.toLowerCase().includes(searchTerm.toLowerCase()));
     
-    const matchesCategory = filterCategory === '' || feedback.category === filterCategory;
+    const matchesCategory = filterCategory === 'all' || feedback.category === filterCategory;
     
     return matchesSearch && matchesCategory;
   });
@@ -139,7 +139,7 @@ const AdminPage: React.FC = () => {
                   <SelectValue placeholder="Filter by category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Categories</SelectItem>
+                  <SelectItem value="all">All Categories</SelectItem>
                   <SelectItem value="bug">Bug Report</SelectItem>
                   <SelectItem value="suggestion">Suggestion</SelectItem>
                   <SelectItem value="compliment">Compliment</SelectItem>
